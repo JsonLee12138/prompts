@@ -1,0 +1,179 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "name": "EntityName",
+  "collectionName": "entities",
+  "description": "实体描述",
+  "softDelete": false,
+  // 📋 Schema Template - Based on @schema/ skills
+  // ✅ 使用 $ref 定义关系字段 (推荐模式)
+  // ✅ 包含 label 字段用于 UI 显示
+  // ✅ 包含 ui 配置定义表单/页面行为
+  // 详细规范参考: ../references/entity_schema.json
+  // 完整指南: ../references/schema-development.md
+  "info": {
+    "displayName": "实体管理",
+    "description": "实体详细描述",
+    "icon": "Database",
+    "locale": "zh-CN"
+  },
+  "ui": {
+    "submitText": "提交",
+    "resetText": "重置",
+    "showReset": true,
+    "layout": {
+      "direction": "vertical",
+      "gap": 16,
+      "columns": 2
+    }
+  },
+  "features": {
+    "softDelete": false,
+    "export": true,
+    "import": false,
+    "batch": false
+  },
+  "properties": {
+    "id": {
+      "type": "uid",
+      "label": "ID",
+      "description": "唯一标识符",
+      "private": true,
+      "writable": false,
+      "ui": {
+        "showInList": true,
+        "showInForm": false
+      }
+    },
+    "name": {
+      "type": "string",
+      "label": "名称",
+      "description": "实体名称",
+      "validate": {
+        "required": true,
+        "min": 2,
+        "max": 100
+      },
+      "unique": true,
+      "ui": {
+        "widget": "input",
+        "placeholder": "请输入名称",
+        "span": 24,
+        "showInList": true,
+        "showInForm": true,
+        "sortable": true,
+        "filterable": true
+      },
+      "queryable": true,
+      "exportable": true,
+      "importable": true
+    },
+    "description": {
+      "type": "text",
+      "label": "描述",
+      "description": "详细描述",
+      "validate": {
+        "max": 500
+      },
+      "ui": {
+        "widget": "textarea",
+        "placeholder": "请输入详细描述",
+        "span": 24,
+        "showInList": false,
+        "showInForm": true,
+        "rows": 4
+      },
+      "exportable": true,
+      "importable": true
+    },
+    "status": {
+      "type": "enum",
+      "label": "状态",
+      "enum": ["active", "inactive"],
+      "default": "active",
+      "validate": {
+        "required": true
+      },
+      "ui": {
+        "widget": "select",
+        "span": 12,
+        "showInList": true,
+        "showInForm": true,
+        "filterable": true,
+        "options": [
+          { "value": "active", "label": "激活" },
+          { "value": "inactive", "label": "禁用" }
+        ]
+      },
+      "queryable": true
+    },
+    "createdAt": {
+      "type": "datetime",
+      "label": "创建时间",
+      "writable": false,
+      "default": "now",
+      "ui": {
+        "widget": "datetime",
+        "span": 12,
+        "showInList": true,
+        "showInForm": false,
+        "sortable": true
+      },
+      "exportable": true
+    },
+    "updatedAt": {
+      "type": "datetime",
+      "label": "更新时间",
+      "writable": false,
+      "default": "now",
+      "ui": {
+        "widget": "datetime",
+        "span": 12,
+        "showInList": true,
+        "showInForm": false,
+        "sortable": true
+      },
+      "exportable": true
+    },
+    // 示例：关系字段使用 $ref (推荐模式)
+    // "author": {
+    //   "$ref": "User",
+    //   "label": "作者",
+    //   "x-relation": {
+    //     "type": "many2One",
+    //     "labelField": "name",
+    //     "preload": true
+    //   },
+    //   "ui": {
+    //     "widget": "select",
+    //     "showInList": true,
+    //     "showInForm": true
+    //   }
+    // },
+    // 示例：数组关系
+    // "categories": {
+    //   "$ref": "Category",
+    //   "label": "分类",
+    //   "x-relation": {
+    //     "type": "many2Many",
+    //     "labelField": "name"
+    //   },
+    //   "ui": {
+    //     "widget": "select",
+    //     "multiple": true,
+    //     "showInForm": true
+    //   }
+    // }
+  },
+  "indexes": [
+    {
+      "type": "unique",
+      "name": "idx_name",
+      "columns": ["name"]
+    },
+    {
+      "type": "index",
+      "name": "idx_status",
+      "columns": ["status"]
+    }
+  ]
+}
