@@ -40,3 +40,13 @@ export default antfu({
 ```bash
 pnpm lint
 ```
+
+## Optional: Commit Quality Guardrails
+If you also want commit message checks and staged-file linting in the same project, add:
+- `.commitlintrc.cjs`
+- `.husky/commit-msg`
+- `.husky/pre-commit`
+- `.lintstagedrc`
+
+Reference:
+- `references/commit-quality.md`

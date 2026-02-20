@@ -89,3 +89,13 @@ export default config({
   react: true,
 })
 ```
+
+## Optional: Commit Quality Guardrails (repo root)
+For monorepos, keep commit hooks and staged-file linting at repository root:
+- `.commitlintrc.cjs`
+- `.husky/commit-msg`
+- `.husky/pre-commit`
+- `.lintstagedrc`
+
+Reference:
+- `references/commit-quality.md`
