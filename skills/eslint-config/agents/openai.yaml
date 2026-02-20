@@ -1,0 +1,4 @@
+interface:
+  display_name: "ESLint Config"
+  short_description: "Set up @antfu/eslint-config"
+  default_prompt: "Use -config to set up ESLint for a single project or workspace."

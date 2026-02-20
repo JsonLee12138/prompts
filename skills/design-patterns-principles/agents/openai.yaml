@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Patterns & Principles"
+  short_description: "GoF patterns and design principles reference"
+  default_prompt: "Use $design-patterns-principles to answer questions about design patterns or principles."

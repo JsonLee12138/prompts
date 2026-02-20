@@ -1,0 +1,4 @@
+interface:
+  display_name: "Components"
+  short_description: "React/TS component standards"
+  default_prompt: "Use  to design or review React/TypeScript components."
