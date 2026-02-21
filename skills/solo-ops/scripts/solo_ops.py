@@ -51,6 +51,11 @@ def build_launch_cmd(provider, model):
     return base
 
 
+def resolve_model(cli_model, config_model):
+    """Resolve model: CLI argument takes precedence over config."""
+    return cli_model or config_model or ""
+
+
 def find_git_root():
     result = subprocess.run(
         ['git', 'rev-parse', '--show-toplevel'],
@@ -174,6 +179,7 @@ def cmd_create(name):
         f'name: {name}\n'
         f'description: ""\n'
         f'default_provider: claude\n'
+        f'default_model: ""\n'
         f'created_at: {now}\n'
         f'pane_id: ""\n'
     )
