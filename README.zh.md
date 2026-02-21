@@ -116,18 +116,10 @@ npx skills add .
 - tmux（可选后端）: https://github.com/tmux/tmux/wiki/Installing
 - Python 3: https://www.python.org/downloads/
 
-### 常用命令（WezTerm/默认）
-```bash
-python3 skills/solo-ops/scripts/solo_ops.py create <name>
-python3 skills/solo-ops/scripts/solo_ops.py open <name> [claude|codex|opencode] [--model <model>]
-python3 skills/solo-ops/scripts/solo_ops.py assign <name> "<task>"
-python3 skills/solo-ops/scripts/solo_ops.py reply <name> "<answer>"
-python3 skills/solo-ops/scripts/solo_ops.py status
-python3 skills/solo-ops/scripts/solo_ops.py merge <name>
-python3 skills/solo-ops/scripts/solo_ops.py delete <name>
-```
+### 提示词优先用法（推荐）
+建议通过 AI 提示词触发 `solo-ops` 工作流，而不是手动运行 Python 命令。
 
-### 简单案例提示词
+示例提示词：
 ```text
 请在当前仓库使用 `solo-ops` 协调 PR #142 的评审。
 1. 创建 3 个角色：`sec-review`、`perf-review`、`test-review`。
@@ -143,13 +135,18 @@ python3 skills/solo-ops/scripts/solo_ops.py delete <name>
 5. 最后输出角色状态和 pending 任务数量。
 ```
 
-### tmux 用法
-```bash
-# 推荐：tmux 专用入口
-python3 skills/solo-ops/scripts/solo_ops_tmux.py <command>
+```text
+请使用 `solo-ops` 查看当前团队角色状态和待办任务数量。
+```
 
-# 等价：显式指定后端
-SOLO_OPS_BACKEND=tmux python3 skills/solo-ops/scripts/solo_ops.py <command>
+```text
+请使用 `solo-ops` 清理已合并完成的角色。
+```
+
+### 在提示词中指定 tmux 后端
+```bash
+# 可用自然语言直接指定：
+# “请用 tmux 后端运行 solo-ops 并打开评审角色会话。”
 ```
 
 如果你没有看到新开的 tmux 会话，通常是因为默认以 detached 方式启动。可手动切换/附着：

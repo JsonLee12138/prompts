@@ -116,18 +116,10 @@ Core capabilities:
 - tmux (supported backend): https://github.com/tmux/tmux/wiki/Installing
 - Python 3: https://www.python.org/downloads/
 
-### Common commands (WezTerm/default)
-```bash
-python3 skills/solo-ops/scripts/solo_ops.py create <name>
-python3 skills/solo-ops/scripts/solo_ops.py open <name> [claude|codex|opencode] [--model <model>]
-python3 skills/solo-ops/scripts/solo_ops.py assign <name> "<task>"
-python3 skills/solo-ops/scripts/solo_ops.py reply <name> "<answer>"
-python3 skills/solo-ops/scripts/solo_ops.py status
-python3 skills/solo-ops/scripts/solo_ops.py merge <name>
-python3 skills/solo-ops/scripts/solo_ops.py delete <name>
-```
+### Prompt-first usage (recommended)
+You should use AI prompts to trigger the skill workflow, instead of manually running Python commands.
 
-### Simple prompt example
+Example prompts:
 ```text
 Use `solo-ops` in this repo to coordinate a review for PR #142.
 1. Create three roles: `sec-review`, `perf-review`, `test-review`.
@@ -143,13 +135,18 @@ Use `solo-ops` in this repo to coordinate a review for PR #142.
 5. Show final role status and pending-task count.
 ```
 
-### tmux usage
-```bash
-# Recommended tmux entrypoint
-python3 skills/solo-ops/scripts/solo_ops_tmux.py <command>
+```text
+Use `solo-ops` to show current team status and pending task counts.
+```
 
-# Equivalent backend switch
-SOLO_OPS_BACKEND=tmux python3 skills/solo-ops/scripts/solo_ops.py <command>
+```text
+Use `solo-ops` to clean up finished roles after merge.
+```
+
+### Optional backend hints in prompts
+```bash
+# Ask for tmux backend explicitly in natural language:
+# "Use solo-ops with tmux backend to open the review roles."
 ```
 
 If you cannot see the opened tmux session, it is usually detached by default. Switch/attach manually:
