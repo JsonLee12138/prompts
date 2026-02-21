@@ -229,9 +229,9 @@ def cmd_delete(name):
     print(f"✓ Deleted role '{name}'")
 
 
-def cmd_open(name, provider=''):
+def cmd_open(name, provider='', model=''):
     if not name:
-        print("Usage: solo-ops open <name> [claude|codex]", file=sys.stderr)
+        print("Usage: solo-ops open <name> [claude|codex|opencode] [--model <model>]", file=sys.stderr)
         sys.exit(1)
 
     root = find_git_root()
@@ -275,11 +275,7 @@ def cmd_open(name, provider=''):
             'The main controller will merge your branch back to main when ready.\n'
         )
 
-    launch_cmds = {
-        'codex': 'codex --dangerously-bypass-approvals-and-sandbox',
-        'claude': 'claude --dangerously-skip-permissions',
-    }
-    launch_cmd = launch_cmds.get(provider, 'claude --dangerously-skip-permissions')
+    launch_cmd = build_launch_cmd(provider, model)
 
     # Save current pane so we can return focus after spawning
     current_pane = os.environ.get('WEZTERM_PANE', '')
@@ -319,7 +315,7 @@ def cmd_open(name, provider=''):
     print(f"✓ Opened role '{name}' ({provider}) in new tab [pane {new_pane_id}]")
 
 
-def cmd_open_all(provider=''):
+def cmd_open_all(provider='', model=''):
     root = find_git_root()
     wt_base = find_wt_base(root)
     roles = list_roles(root, wt_base)
@@ -327,12 +323,12 @@ def cmd_open_all(provider=''):
         print("No roles found. Create one with: solo-ops create <name>", file=sys.stderr)
         sys.exit(1)
     for role in roles:
-        cmd_open(role, provider)
+        cmd_open(role, provider, model)
 
 
-def cmd_assign(name, task, provider=''):
+def cmd_assign(name, task, provider='', model=''):
     if not name or not task:
-        print('Usage: solo-ops assign <name> "<task description>" [claude|codex]',
+        print('Usage: solo-ops assign <name> "<task description>" [claude|codex|opencode] [--model <model>]',
               file=sys.stderr)
         sys.exit(1)
 
@@ -364,7 +360,7 @@ def cmd_assign(name, task, provider=''):
     pane_id = cfg_get(str(config), 'pane_id')
     if not pane_alive(pane_id):
         print(f"Role '{name}' is not running, opening session first...")
-        cmd_open(name, provider)
+        cmd_open(name, provider, model)
         pane_id = cfg_get(str(config), 'pane_id')
         print("  Waiting for AI to initialize...")
         time.sleep(3)
@@ -484,6 +480,41 @@ def cmd_install():
 
 # ─── dispatch ────────────────────────────────────────────────────────────────
 
+def main_for_test(args):
+    """Test dispatcher that takes explicit args instead of sys.argv."""
+    cmd = args[0] if args else 'help'
+    rest = args[1:]
+
+    if cmd == 'create':
+        cmd_create(rest[0] if rest else '')
+    elif cmd == 'delete':
+        cmd_delete(rest[0] if rest else '')
+    elif cmd == 'open':
+        if len(rest) > 0:
+            name = rest[0]
+            provider, model = parse_provider_and_model(rest[1:])
+            cmd_open(name, provider, model)
+    elif cmd == 'open-all':
+        provider, model = parse_provider_and_model(rest)
+        cmd_open_all(provider, model)
+    elif cmd == 'assign':
+        if len(rest) > 1:
+            name = rest[0]
+            task = rest[1]
+            provider, model = parse_provider_and_model(rest[2:])
+            cmd_assign(name, task, provider, model)
+    elif cmd == 'reply':
+        cmd_reply(rest[0] if rest else '', rest[1] if len(rest) > 1 else '')
+    elif cmd == 'status':
+        cmd_status()
+    elif cmd == 'merge':
+        cmd_merge(rest[0] if rest else '')
+    elif cmd in ('help', ''):
+        print(HELP_TEXT)
+    else:
+        print(f"Unknown command: {cmd}. Run 'solo-ops help'", file=sys.stderr)
+
+
 HELP_TEXT = """\
 solo-ops — AI team role manager
 
@@ -505,33 +536,7 @@ Run as:
 
 def main():
     args = sys.argv[1:]
-    cmd = args[0] if args else 'help'
-    rest = args[1:]
-
-    def arg(i, default=''):
-        return rest[i] if len(rest) > i else default
-
-    if cmd == 'create':
-        cmd_create(arg(0))
-    elif cmd == 'delete':
-        cmd_delete(arg(0))
-    elif cmd == 'open':
-        cmd_open(arg(0), arg(1))
-    elif cmd == 'open-all':
-        cmd_open_all(arg(0))
-    elif cmd == 'assign':
-        cmd_assign(arg(0), arg(1), arg(2))
-    elif cmd == 'reply':
-        cmd_reply(arg(0), arg(1))
-    elif cmd == 'status':
-        cmd_status()
-    elif cmd == 'merge':
-        cmd_merge(arg(0))
-    elif cmd in ('help', ''):
-        print(HELP_TEXT)
-    else:
-        print(f"Unknown command: {cmd}. Run 'solo-ops help'", file=sys.stderr)
-        sys.exit(1)
+    main_for_test(args)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 import importlib.util
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 def load_module():
@@ -46,4 +47,18 @@ class BuildLaunchCmdTests(unittest.TestCase):
             cmd,
             "claude --dangerously-skip-permissions --model claude-sonnet-4-6",
         )
+
+
+class DispatchOptionForwardingTests(unittest.TestCase):
+    @patch("builtins.print")
+    def test_open_forwards_provider_and_model(self, _):
+        m = load_module()
+        calls = []
+
+        def fake_open(name, provider="", model=""):
+            calls.append((name, provider, model))
+
+        m.cmd_open = fake_open
+        m.main_for_test(["open", "dev", "opencode", "--model", "openai/gpt-5"])
+        self.assertEqual(calls, [("dev", "opencode", "openai/gpt-5")])
 
