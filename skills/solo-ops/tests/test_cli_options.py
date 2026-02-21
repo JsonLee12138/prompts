@@ -2,6 +2,9 @@ import importlib.util
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+import tempfile
+import shutil
+import subprocess
 
 
 def load_module():
@@ -107,4 +110,124 @@ class ModelPrecedenceTests(unittest.TestCase):
                 m.find_wt_base = original_find_wt_base
 
 
+class DeleteRoleTests(unittest.TestCase):
+    def test_delete_closes_running_pane_before_removing_worktree(self):
+        m = load_module()
 
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            wt_path = root / ".worktrees" / "demo"
+            teams_dir = wt_path / "agents" / "teams" / "demo"
+            teams_dir.mkdir(parents=True)
+            (teams_dir / "config.yaml").write_text('pane_id: "123"\n')
+
+            calls = []
+
+            def fake_run(args, **kwargs):
+                calls.append(args)
+                return subprocess.CompletedProcess(args, 0)
+
+            with patch.object(m, "find_git_root", return_value=str(root)):
+                with patch.object(m, "find_wt_base", return_value=".worktrees"):
+                    with patch.object(m, "pane_alive", return_value=True):
+                        with patch.object(m.subprocess, "run", side_effect=fake_run):
+                            m.cmd_delete("demo")
+
+            self.assertIn(
+                ["wezterm", "cli", "kill-pane", "--pane-id", "123"],
+                calls,
+            )
+
+    def test_delete_closes_running_tmux_pane_when_backend_is_tmux(self):
+        m = load_module()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            wt_path = root / ".worktrees" / "demo"
+            teams_dir = wt_path / "agents" / "teams" / "demo"
+            teams_dir.mkdir(parents=True)
+            (teams_dir / "config.yaml").write_text('pane_id: "%123"\n')
+
+            calls = []
+
+            def fake_run(args, **kwargs):
+                calls.append(args)
+                return subprocess.CompletedProcess(args, 0)
+
+            with patch.dict(m.os.environ, {"SOLO_OPS_BACKEND": "tmux"}):
+                with patch.object(m, "find_git_root", return_value=str(root)):
+                    with patch.object(m, "find_wt_base", return_value=".worktrees"):
+                        with patch.object(m, "pane_alive", return_value=True):
+                            with patch.object(m.subprocess, "run", side_effect=fake_run):
+                                m.cmd_delete("demo")
+
+            self.assertIn(
+                ["tmux", "kill-pane", "-t", "%123"],
+                calls,
+            )
+
+    def test_delete_handles_missing_worktree_after_failed_git_remove(self):
+        m = load_module()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            wt_path = root / ".worktrees" / "demo"
+            wt_path.mkdir(parents=True)
+
+            def fake_run(args, **kwargs):
+                if args[:3] == ["git", "worktree", "remove"]:
+                    # Simulate git returning non-zero while the directory is already gone.
+                    shutil.rmtree(wt_path)
+                    return subprocess.CompletedProcess(args, 1)
+                if args[:3] == ["git", "branch", "-D"]:
+                    return subprocess.CompletedProcess(args, 0)
+                return subprocess.CompletedProcess(args, 0)
+
+            with patch.object(m, "find_git_root", return_value=str(root)):
+                with patch.object(m, "find_wt_base", return_value=".worktrees"):
+                    with patch.object(m.subprocess, "run", side_effect=fake_run):
+                        # Should not raise FileNotFoundError when fallback cleanup runs.
+                        m.cmd_delete("demo")
+
+
+class TmuxBackendTests(unittest.TestCase):
+    def test_pane_alive_uses_tmux_list_panes(self):
+        m = load_module()
+
+        with patch.dict(m.os.environ, {"SOLO_OPS_BACKEND": "tmux"}):
+            with patch.object(
+                m.subprocess,
+                "run",
+                return_value=subprocess.CompletedProcess(
+                    ["tmux", "list-panes"], 0, stdout="%1\n%2\n", stderr=""
+                ),
+            ) as run_mock:
+                self.assertTrue(m.pane_alive("%2"))
+                self.assertFalse(m.pane_alive("%3"))
+
+        run_mock.assert_called_with(
+            ["tmux", "list-panes", "-a", "-F", "#{pane_id}"],
+            capture_output=True,
+            text=True,
+        )
+
+    def test_pane_send_uses_tmux_send_keys(self):
+        m = load_module()
+
+        calls = []
+
+        def fake_run(args, **kwargs):
+            calls.append(args)
+            return subprocess.CompletedProcess(args, 0)
+
+        with patch.dict(m.os.environ, {"SOLO_OPS_BACKEND": "tmux"}):
+            with patch.object(m.subprocess, "run", side_effect=fake_run):
+                m.pane_send("%9", "hello")
+
+        self.assertEqual(
+            calls,
+            [
+                ["tmux", "send-keys", "-t", "%9", "-l", "hello"],
+                ["tmux", "send-keys", "-t", "%9", "Enter"],
+            ],
+        )

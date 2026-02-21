@@ -19,6 +19,13 @@ from pathlib import Path
 SUPPORTED_PROVIDERS = {"claude", "codex", "opencode"}
 
 
+def get_session_backend():
+    backend = os.environ.get("SOLO_OPS_BACKEND", "wezterm").strip().lower()
+    if backend == "tmux":
+        return "tmux"
+    return "wezterm"
+
+
 def parse_provider_and_model(args):
     provider = ""
     model = ""
@@ -122,6 +129,16 @@ def cfg_set(filepath, key, value):
 def pane_alive(pane_id):
     if not pane_id:
         return False
+    backend = get_session_backend()
+    if backend == "tmux":
+        result = subprocess.run(
+            ['tmux', 'list-panes', '-a', '-F', '#{pane_id}'],
+            capture_output=True, text=True
+        )
+        if result.returncode != 0:
+            return False
+        return str(pane_id) in {line.strip() for line in result.stdout.splitlines()}
+
     result = subprocess.run(
         ['wezterm', 'cli', 'list'],
         capture_output=True, text=True
@@ -137,6 +154,18 @@ def pane_alive(pane_id):
 
 def pane_send(pane_id, text):
     """Send text + Enter to a WezTerm pane via stdin pipe."""
+    backend = get_session_backend()
+    if backend == "tmux":
+        subprocess.run(
+            ['tmux', 'send-keys', '-t', str(pane_id), '-l', text],
+            capture_output=True
+        )
+        subprocess.run(
+            ['tmux', 'send-keys', '-t', str(pane_id), 'Enter'],
+            capture_output=True
+        )
+        return
+
     subprocess.run(
         ['wezterm', 'cli', 'send-text', '--pane-id', str(pane_id), '--no-paste'],
         input=text.encode(),
@@ -216,19 +245,42 @@ def cmd_delete(name):
     root = find_git_root()
     wt_base = find_wt_base(root)
     wt_path = Path(root, wt_base, name)
+    config = wt_path / 'agents' / 'teams' / name / 'config.yaml'
 
     if not wt_path.is_dir():
         print(f"Error: role '{name}' not found", file=sys.stderr)
         sys.exit(1)
 
     print(f"Deleting role '{name}'...")
+    pane_id = cfg_get(str(config), 'pane_id')
+    if pane_alive(pane_id):
+        if get_session_backend() == "tmux":
+            close_result = subprocess.run(
+                ['tmux', 'kill-pane', '-t', str(pane_id)],
+                capture_output=True
+            )
+        else:
+            close_result = subprocess.run(
+                ['wezterm', 'cli', 'kill-pane', '--pane-id', str(pane_id)],
+                capture_output=True
+            )
+        if close_result.returncode != 0:
+            print(
+                f"Warning: failed to close pane {pane_id}; continuing delete",
+                file=sys.stderr
+            )
+
     result = subprocess.run(
         ['git', 'worktree', 'remove', str(wt_path), '--force'],
         cwd=root, capture_output=True
     )
     if result.returncode != 0:
         import shutil
-        shutil.rmtree(wt_path)
+        try:
+            shutil.rmtree(wt_path)
+        except FileNotFoundError:
+            # git worktree remove may have already deleted the directory
+            pass
 
     subprocess.run(['git', 'branch', '-D', f'team/{name}'],
                    cwd=root, capture_output=True)
@@ -283,33 +335,46 @@ def cmd_open(name, provider='', model=''):
 
     launch_cmd = build_launch_cmd(provider, model)
 
-    # Save current pane so we can return focus after spawning
+    backend = get_session_backend()
     current_pane = os.environ.get('WEZTERM_PANE', '')
 
-    # Spawn a new tab with an interactive shell (no command = WezTerm opens default shell)
-    # This avoids the issue where `zsh -c "claude"` causes TUI apps to exit immediately
-    result = subprocess.run(
-        ['wezterm', 'cli', 'spawn', '--cwd', str(wt_path)],
-        capture_output=True, text=True
-    )
+    if backend == "tmux":
+        result = subprocess.run(
+            ['tmux', 'new-session', '-d', '-P', '-F', '#{pane_id}', '-c', str(wt_path)],
+            capture_output=True, text=True
+        )
+    else:
+        # Spawn a new tab with an interactive shell (no command = WezTerm opens default shell)
+        # This avoids the issue where `zsh -c "claude"` causes TUI apps to exit immediately
+        result = subprocess.run(
+            ['wezterm', 'cli', 'spawn', '--cwd', str(wt_path)],
+            capture_output=True, text=True
+        )
+
     if result.returncode != 0 or not result.stdout.strip():
-        print(f"✗ Failed to open WezTerm tab for '{name}'", file=sys.stderr)
+        print(f"✗ Failed to open {backend} session for '{name}'", file=sys.stderr)
         sys.exit(1)
 
     new_pane_id = result.stdout.strip()
 
-    # Set tab title
-    subprocess.run(
-        ['wezterm', 'cli', 'set-tab-title', '--pane-id', new_pane_id, name],
-        capture_output=True
-    )
-
-    # Return focus to the caller's pane — don't steal focus
-    if current_pane:
+    if backend == "tmux":
         subprocess.run(
-            ['wezterm', 'cli', 'activate-pane', '--pane-id', current_pane],
+            ['tmux', 'rename-window', '-t', str(new_pane_id), name],
             capture_output=True
         )
+    else:
+        # Set tab title
+        subprocess.run(
+            ['wezterm', 'cli', 'set-tab-title', '--pane-id', new_pane_id, name],
+            capture_output=True
+        )
+
+        # Return focus to the caller's pane — don't steal focus
+        if current_pane:
+            subprocess.run(
+                ['wezterm', 'cli', 'activate-pane', '--pane-id', current_pane],
+                capture_output=True
+            )
 
     cfg_set(str(config), 'pane_id', new_pane_id)
 
@@ -318,7 +383,7 @@ def cmd_open(name, provider='', model=''):
     time.sleep(2)
     pane_send(new_pane_id, launch_cmd)
 
-    print(f"✓ Opened role '{name}' ({provider}) in new tab [pane {new_pane_id}]")
+    print(f"✓ Opened role '{name}' ({provider}) in {backend} [pane {new_pane_id}]")
 
 
 def cmd_open_all(provider='', model=''):
@@ -540,6 +605,9 @@ Roles live in: .worktrees/<name>/agents/teams/<name>/
 
 Run as:
   python3 <skill-base-dir>/scripts/solo_ops.py <command>
+
+Tmux backend:
+  SOLO_OPS_BACKEND=tmux python3 <skill-base-dir>/scripts/solo_ops.py <command>
 """
 
 
