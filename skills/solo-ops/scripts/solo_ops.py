@@ -39,6 +39,18 @@ def parse_provider_and_model(args):
     return provider, model
 
 
+def build_launch_cmd(provider, model):
+    base_map = {
+        "claude": "claude --dangerously-skip-permissions",
+        "codex": "codex --dangerously-bypass-approvals-and-sandbox",
+        "opencode": "opencode",
+    }
+    base = base_map.get(provider or "claude", base_map["claude"])
+    if model:
+        return f"{base} --model {model}"
+    return base
+
+
 def find_git_root():
     result = subprocess.run(
         ['git', 'rev-parse', '--show-toplevel'],

@@ -24,3 +24,26 @@ class ParseProviderModelTests(unittest.TestCase):
         provider, model = m.parse_provider_and_model(["--model", "claude-sonnet-4-6"])
         self.assertEqual(provider, "")
         self.assertEqual(model, "claude-sonnet-4-6")
+
+
+class BuildLaunchCmdTests(unittest.TestCase):
+    def test_opencode_without_model(self):
+        m = load_module()
+        self.assertEqual(m.build_launch_cmd("opencode", ""), "opencode")
+
+    def test_codex_with_model(self):
+        m = load_module()
+        cmd = m.build_launch_cmd("codex", "gpt-5")
+        self.assertEqual(
+            cmd,
+            "codex --dangerously-bypass-approvals-and-sandbox --model gpt-5",
+        )
+
+    def test_claude_with_model(self):
+        m = load_module()
+        cmd = m.build_launch_cmd("claude", "claude-sonnet-4-6")
+        self.assertEqual(
+            cmd,
+            "claude --dangerously-skip-permissions --model claude-sonnet-4-6",
+        )
+
