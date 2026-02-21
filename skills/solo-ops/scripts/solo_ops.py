@@ -518,14 +518,17 @@ def main_for_test(args):
 HELP_TEXT = """\
 solo-ops — AI team role manager
 
-  create <name>                   Create role + git worktree (branch: team/<name>)
-  delete <name>                   Remove role + worktree
-  open <name> [claude|codex]      Open role session in new WezTerm tab
-  open-all [claude|codex]         Open all role sessions
-  assign <name> "<task>"          Write task file + notify session (auto-opens if needed)
-  reply <name> "<answer>"         Send a reply to a role's running session
-  status                          Show all roles, running state, pending task count
-  merge <name>                    Merge team/<name> branch back to current branch
+  create <name>                          Create role + git worktree (branch: team/<name>)
+  delete <name>                          Remove role + worktree
+  open <name> [provider] [--model <m>]   Open role session (provider: claude|codex|opencode)
+  open-all [provider] [--model <m>]      Open all role sessions
+  assign <name> "<task>" [provider] [--model <m>]   Write task file + notify session
+  reply <name> "<answer>"                Send a reply to a role's running session
+  status                                 Show all roles, running state, pending task count
+  merge <name>                           Merge team/<name> branch back to current branch
+
+Providers: claude, codex, opencode (default: claude)
+Model flag: --model <model-identifier>  Specify AI model (e.g., claude-sonnet-4-6, openai/gpt-5)
 
 Roles live in: .worktrees/<name>/agents/teams/<name>/
 
