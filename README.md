@@ -104,11 +104,12 @@ References:
 ## solo-ops
 `solo-ops` manages multi-agent role workflows with git worktrees + terminal sessions.
 
-Core capabilities:
-- Create/delete role worktrees (`team/<name>`)
-- Open role sessions (`claude`/`codex`/`opencode`)
-- Assign tasks and send replies into running sessions
-- Check role status and merge completed role branches
+Core features:
+- Create roles and isolated worktrees (`team/<name>`)
+- Open role sessions (`claude` / `codex` / `opencode`)
+- Assign tasks to a role and send controller replies
+- Check team status and pending tasks
+- Merge completed role branches and delete finished roles
 
 ### Required tools
 - Git: https://git-scm.com/
@@ -116,37 +117,17 @@ Core capabilities:
 - tmux (supported backend): https://github.com/tmux/tmux/wiki/Installing
 - Python 3: https://www.python.org/downloads/
 
-### Prompt-first usage (recommended)
-You should use AI prompts to trigger the skill workflow, instead of manually running Python commands.
+### How to use
+Use `/solo-ops` prompts directly in chat.  
+You do not need to run `python` commands manually for normal usage.
 
-Example prompts:
+### Simple example
 ```text
-Use `solo-ops` in this repo to coordinate a review for PR #142.
-1. Create three roles: `sec-review`, `perf-review`, `test-review`.
-2. Open all three sessions (use claude by default).
-3. Assign one task per role:
-   - sec-review: check security implications and risky changes
-   - perf-review: evaluate performance impact and hotspots
-   - test-review: validate test coverage and missing cases
-4. Wait for role outputs, then summarize findings in one report with:
-   - Critical issues
-   - Medium-risk issues
-   - Suggested fixes
-5. Show final role status and pending-task count.
-```
-
-```text
-Use `solo-ops` to show current team status and pending task counts.
-```
-
-```text
-Use `solo-ops` to clean up finished roles after merge.
-```
-
-### Optional backend hints in prompts
-```bash
-# Ask for tmux backend explicitly in natural language:
-# "Use solo-ops with tmux backend to open the review roles."
+/solo-ops Create a review team for PR #142 with three roles:
+- sec-review (security)
+- perf-review (performance)
+- test-review (test coverage)
+Open the roles, assign one task to each role, and report final findings with role status.
 ```
 
 If you cannot see the opened tmux session, it is usually detached by default. Switch/attach manually:

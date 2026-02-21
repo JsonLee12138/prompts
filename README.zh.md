@@ -104,11 +104,12 @@ npx skills add .
 ## solo-ops
 `solo-ops` 用于多角色协作开发：基于 git worktree + 终端会话管理角色，并支持任务派发与回复。
 
-核心能力：
-- 创建/删除角色 worktree（`team/<name>`）
-- 打开角色会话（`claude`/`codex`/`opencode`）
-- 派发任务并向会话发送消息（`assign`/`reply`）
-- 查看状态、合并角色分支
+核心功能：
+- 创建角色与隔离 worktree（`team/<name>`）
+- 打开角色会话（`claude` / `codex` / `opencode`）
+- 给角色派发任务并发送主控回复
+- 查看团队状态与待办任务数量
+- 合并角色分支并删除已完成角色
 
 ### 依赖工具
 - Git: https://git-scm.com/
@@ -116,37 +117,17 @@ npx skills add .
 - tmux（可选后端）: https://github.com/tmux/tmux/wiki/Installing
 - Python 3: https://www.python.org/downloads/
 
-### 提示词优先用法（推荐）
-建议通过 AI 提示词触发 `solo-ops` 工作流，而不是手动运行 Python 命令。
+### 使用方式
+在对话中直接使用 `/solo-ops` 相关提示词即可。  
+正常使用不需要手动运行 `python` 命令。
 
-示例提示词：
+### 简单示例
 ```text
-请在当前仓库使用 `solo-ops` 协调 PR #142 的评审。
-1. 创建 3 个角色：`sec-review`、`perf-review`、`test-review`。
-2. 打开这 3 个角色会话（默认使用 claude）。
-3. 分别派发任务：
-   - sec-review：检查安全影响和高风险改动
-   - perf-review：评估性能影响与潜在热点
-   - test-review：核对测试覆盖率与缺失用例
-4. 等待各角色回传结果后，汇总一份总报告，至少包含：
-   - 严重问题
-   - 中风险问题
-   - 修复建议
-5. 最后输出角色状态和 pending 任务数量。
-```
-
-```text
-请使用 `solo-ops` 查看当前团队角色状态和待办任务数量。
-```
-
-```text
-请使用 `solo-ops` 清理已合并完成的角色。
-```
-
-### 在提示词中指定 tmux 后端
-```bash
-# 可用自然语言直接指定：
-# “请用 tmux 后端运行 solo-ops 并打开评审角色会话。”
+/solo-ops 请为 PR #142 创建评审小组，包含三个角色：
+- sec-review（安全）
+- perf-review（性能）
+- test-review（测试覆盖）
+请打开角色会话、分别派发任务，并在最后输出汇总结论和角色状态。
 ```
 
 如果你没有看到新开的 tmux 会话，通常是因为默认以 detached 方式启动。可手动切换/附着：
