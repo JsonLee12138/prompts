@@ -7,6 +7,7 @@
 - `design-patterns-principles`
 - `eslint-config`
 - `solo-ops`
+- `vite-tanstack`
 
 更多用法参考 [skills 文档](https://github.com/vercel-labs/skills)。
 
@@ -35,7 +36,8 @@ npx skills add JsonLee12138/prompts \
   --skill components \
   --skill design-patterns-principles \
   --skill eslint-config \
-  --skill solo-ops
+  --skill solo-ops \
+  --skill vite-tanstack
 ```
 
 ## 从本地当前目录安装
@@ -55,6 +57,7 @@ npx skills add .
 - [design-patterns-principles](#design-patterns-principles)
 - [eslint-config](#eslint-config)
 - [solo-ops](#solo-ops)
+- [vite-tanstack](#vite-tanstack)
 
 ## components
 适用场景：设计、实现或评审 React/TypeScript 组件时，统一命名规范、Props 类型、Hooks 用法和 UnoCSS 风格。
@@ -142,3 +145,25 @@ tmux attach -t <session_name_or_id>          # 在普通终端
 - `skills/solo-ops/scripts/solo_ops.py`
 - `skills/solo-ops/scripts/solo_ops_tmux.py`
 - `skills/solo-ops/references/details.md`
+
+## vite-tanstack
+适用场景：在 Vite + React 项目中配置或评审 TanStack（Router/Query/Form/Table）相关设置。
+
+快速流程：
+1. 指定所需模块：`router`、`query`、`form`、`table`（或 `all`）。
+2. 在 `vite.config.ts` 中注册 `@tanstack/devtools-vite` 插件。
+3. 在 `main.tsx` 中配置 `TanStackDevtools` 组件。
+4. 按正确嵌套顺序配置各模块的 Provider。
+5. 对照合规清单进行检查。
+
+使用示例：
+- `/vite-tanstack router query` — 加载 Router + Query 参考文档
+- `/vite-tanstack all` — 加载全部四个模块参考文档
+- `/vite-tanstack` — 交互式选择所需模块
+
+参考文件：
+- `skills/vite-tanstack/SKILL.md`
+- `skills/vite-tanstack/references/router.md`
+- `skills/vite-tanstack/references/query.md`
+- `skills/vite-tanstack/references/form.md`
+- `skills/vite-tanstack/references/table.md`

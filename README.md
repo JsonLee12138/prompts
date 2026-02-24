@@ -7,6 +7,7 @@ This repository includes the following skills (current `skills/` directory only)
 - `design-patterns-principles`
 - `eslint-config`
 - `solo-ops`
+- `vite-tanstack`
 
 See the [skills documentation](https://github.com/vercel-labs/skills) for more usage details.
 
@@ -35,7 +36,8 @@ npx skills add JsonLee12138/prompts \
   --skill components \
   --skill design-patterns-principles \
   --skill eslint-config \
-  --skill solo-ops
+  --skill solo-ops \
+  --skill vite-tanstack
 ```
 
 ## Install From Local Directory
@@ -55,6 +57,7 @@ npx skills add .
 - [design-patterns-principles](#design-patterns-principles)
 - [eslint-config](#eslint-config)
 - [solo-ops](#solo-ops)
+- [vite-tanstack](#vite-tanstack)
 
 ## components
 Use when designing, implementing, or reviewing React/TypeScript components with naming conventions, props typing, hooks usage, and UnoCSS styling standards.
@@ -142,3 +145,25 @@ Related files:
 - `skills/solo-ops/scripts/solo_ops.py`
 - `skills/solo-ops/scripts/solo_ops_tmux.py`
 - `skills/solo-ops/references/details.md`
+
+## vite-tanstack
+TanStack (Router/Query/Form/Table) configuration guide for Vite + React projects. Use when setting up or reviewing TanStack config in a Vite project.
+
+Quick workflow:
+1. Specify modules needed: `router`, `query`, `form`, `table` (or `all`).
+2. Register `@tanstack/devtools-vite` plugin in `vite.config.ts`.
+3. Set up `TanStackDevtools` component in `main.tsx`.
+4. Configure each module's provider in correct nesting order.
+5. Verify against compliance checklist.
+
+Usage examples:
+- `/vite-tanstack router query` — load Router + Query references
+- `/vite-tanstack all` — load all four module references
+- `/vite-tanstack` — interactively choose modules
+
+References:
+- `skills/vite-tanstack/SKILL.md`
+- `skills/vite-tanstack/references/router.md`
+- `skills/vite-tanstack/references/query.md`
+- `skills/vite-tanstack/references/form.md`
+- `skills/vite-tanstack/references/table.md`
