@@ -7,6 +7,7 @@
 - `design-patterns-principles`
 - `eslint-config`
 - `solo-ops`
+- `unocss-shadcn`
 - `vite-tanstack`
 
 更多用法参考 [skills 文档](https://github.com/vercel-labs/skills)。
@@ -37,6 +38,7 @@ npx skills add JsonLee12138/prompts \
   --skill design-patterns-principles \
   --skill eslint-config \
   --skill solo-ops \
+  --skill unocss-shadcn \
   --skill vite-tanstack
 ```
 
@@ -57,6 +59,7 @@ npx skills add .
 - [design-patterns-principles](#design-patterns-principles)
 - [eslint-config](#eslint-config)
 - [solo-ops](#solo-ops)
+- [unocss-shadcn](#unocss-shadcn)
 - [vite-tanstack](#vite-tanstack)
 
 ## components
@@ -145,6 +148,25 @@ tmux attach -t <session_name_or_id>          # 在普通终端
 - `skills/solo-ops/scripts/solo_ops.py`
 - `skills/solo-ops/scripts/solo_ops_tmux.py`
 - `skills/solo-ops/references/details.md`
+
+## unocss-shadcn
+适用场景：以半自动方式配置 UnoCSS 与 `unocss-preset-shadcn`，并在框架无关前提下统一 shadcn 组件目录与依赖策略。
+
+快速流程：
+1. 严格识别项目形态（`pnpm-workspace.yaml` 或根 `package.json.workspaces`）。
+2. 修改 `uno.config.*` / `unocss.config.*`，注册 `unocss-preset-shadcn`。
+3. 按项目类型路由组件目录：
+4. Monorepo -> `packages/shadcn-ui`，并使用 `peerDependencies`。
+5. 单项目 -> `src/components`。
+6. 使用/创建组件前先执行 shadcn MCP 调用链。
+7. 创建组件必须走 manual 模式（不走默认 Tailwind init 流）。
+8. MCP 不可用时，阻断组件相关步骤并显式报错。
+
+参考文件：
+- `skills/unocss-shadcn/SKILL.md`
+- `skills/unocss-shadcn/references/monorepo.md`
+- `skills/unocss-shadcn/references/single-project.md`
+- `skills/unocss-shadcn/references/checklist.md`
 
 ## vite-tanstack
 适用场景：在 Vite + React 项目中配置或评审 TanStack（Router/Query/Form/Table）相关设置。

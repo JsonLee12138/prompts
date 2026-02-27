@@ -7,6 +7,7 @@ This repository includes the following skills (current `skills/` directory only)
 - `design-patterns-principles`
 - `eslint-config`
 - `solo-ops`
+- `unocss-shadcn`
 - `vite-tanstack`
 
 See the [skills documentation](https://github.com/vercel-labs/skills) for more usage details.
@@ -37,6 +38,7 @@ npx skills add JsonLee12138/prompts \
   --skill design-patterns-principles \
   --skill eslint-config \
   --skill solo-ops \
+  --skill unocss-shadcn \
   --skill vite-tanstack
 ```
 
@@ -57,6 +59,7 @@ npx skills add .
 - [design-patterns-principles](#design-patterns-principles)
 - [eslint-config](#eslint-config)
 - [solo-ops](#solo-ops)
+- [unocss-shadcn](#unocss-shadcn)
 - [vite-tanstack](#vite-tanstack)
 
 ## components
@@ -145,6 +148,25 @@ Related files:
 - `skills/solo-ops/scripts/solo_ops.py`
 - `skills/solo-ops/scripts/solo_ops_tmux.py`
 - `skills/solo-ops/references/details.md`
+
+## unocss-shadcn
+Configure UnoCSS with `unocss-preset-shadcn` in a semi-automatic, framework-agnostic workflow.
+
+Quick workflow:
+1. Detect project shape strictly (`pnpm-workspace.yaml` or root `package.json.workspaces`).
+2. Patch `uno.config.*` / `unocss.config.*` to include `unocss-preset-shadcn`.
+3. Route components by project type:
+4. Monorepo -> `packages/shadcn-ui` with `peerDependencies`.
+5. Single project -> `src/components`.
+6. Use shadcn MCP chain before component usage/creation.
+7. Create components in manual mode (no default Tailwind-oriented init flow).
+8. If MCP is unavailable, block component operations and report error.
+
+References:
+- `skills/unocss-shadcn/SKILL.md`
+- `skills/unocss-shadcn/references/monorepo.md`
+- `skills/unocss-shadcn/references/single-project.md`
+- `skills/unocss-shadcn/references/checklist.md`
 
 ## vite-tanstack
 TanStack (Router/Query/Form/Table) configuration guide for Vite + React projects. Use when setting up or reviewing TanStack config in a Vite project.
