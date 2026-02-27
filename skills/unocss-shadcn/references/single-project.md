@@ -36,14 +36,16 @@ Use shadcn MCP outputs to decide additional component-specific dependencies.
 ## UnoCSS Preset Patch Template
 Patch existing `uno.config.*` or `unocss.config.*` by adding preset import and registration.
 
+Default to `presetWind4`. Only use `presetWind3` or other versions if the user explicitly requests it.
+
 Example:
 ```ts
-import { defineConfig, presetWind3 } from 'unocss'
+import { defineConfig, presetWind4 } from 'unocss'
 import presetShadcn from 'unocss-preset-shadcn'
 
 export default defineConfig({
   presets: [
-    presetWind3(),
+    presetWind4(),
     presetShadcn(),
   ],
 })

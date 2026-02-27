@@ -10,6 +10,8 @@
 ## Configuration Checks
 - `unocss-preset-shadcn` is imported in UnoCSS config.
 - `presetShadcn()` appears in `presets`.
+- `presetWind4` is used by default. `presetWind3` or others only if user explicitly requested.
+- Monorepo: UnoCSS config is in `apps/<app>/uno.config.*`, NOT at repo root.
 - Existing UnoCSS config behavior is preserved (minimal diff).
 
 ## Path and Dependency Checks

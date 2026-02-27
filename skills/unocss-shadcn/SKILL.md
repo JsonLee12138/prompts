@@ -16,10 +16,14 @@ Apply a deterministic setup flow for UnoCSS and `unocss-preset-shadcn` without r
 3. Use destination policy:
 - Monorepo: `packages/shadcn-ui`
 - Single project: `src/components`
-4. For monorepo component package dependencies, write shadcn-related runtime items to `peerDependencies`.
-5. Use shadcn MCP before any component usage or creation.
-6. Create shadcn components in manual mode only (do not use Tailwind-oriented auto init flow).
-7. If shadcn MCP is unavailable, block the component step and return an explicit error.
+4. UnoCSS config location policy:
+- Monorepo: configure in each `apps/<app>/uno.config.*` (NOT at repo root or in packages).
+- Single project: configure at project root `uno.config.*`.
+5. Default to `presetWind4` unless the user explicitly requests a different version (e.g. `presetWind3`).
+6. For monorepo component package dependencies, write shadcn-related runtime items to `peerDependencies`.
+7. Use shadcn MCP before any component usage or creation.
+8. Create shadcn components in manual mode only (do not use Tailwind-oriented auto init flow).
+9. If shadcn MCP is unavailable, block the component step and return an explicit error.
 
 ## Workflow
 1. Inspect project files:

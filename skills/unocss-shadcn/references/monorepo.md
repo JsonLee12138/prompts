@@ -32,17 +32,26 @@ Example template:
 
 Derive exact component dependencies from shadcn MCP outputs. Do not guess dependency names or versions.
 
-## UnoCSS Preset Patch Template
-Patch existing `uno.config.*` or `unocss.config.*` by adding preset import and registration.
+## UnoCSS Config Location
+In monorepo, the UnoCSS config MUST live inside each app, not at the repo root or in packages.
 
-Example:
+Place the config at: `apps/<app-name>/uno.config.ts` (or `.js`/`.mts`).
+
+Do NOT create `uno.config.*` at the repo root for monorepo setups.
+
+## UnoCSS Preset Patch Template
+Patch existing `apps/<app>/uno.config.*` or `apps/<app>/unocss.config.*` by adding preset import and registration.
+
+Default to `presetWind4`. Only use `presetWind3` or other versions if the user explicitly requests it.
+
+Example (`apps/<app>/uno.config.ts`):
 ```ts
-import { defineConfig, presetWind3 } from 'unocss'
+import { defineConfig, presetWind4 } from 'unocss'
 import presetShadcn from 'unocss-preset-shadcn'
 
 export default defineConfig({
   presets: [
-    presetWind3(),
+    presetWind4(),
     presetShadcn(),
   ],
 })
