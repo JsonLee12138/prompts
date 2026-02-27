@@ -3,6 +3,7 @@
 
 This repository includes the following skills (current `skills/` directory only):
 
+- `brainstorming`
 - `components`
 - `design-patterns-principles`
 - `eslint-config`
@@ -34,6 +35,7 @@ npx skills add JsonLee12138/prompts --all
 
 ```bash
 npx skills add JsonLee12138/prompts \
+  --skill brainstorming \
   --skill components \
   --skill design-patterns-principles \
   --skill eslint-config \
@@ -55,12 +57,30 @@ npx skills add .
 - `-y, --yes`: skip confirmation prompts
 
 ## Skills Usage Index
+- [brainstorming](#brainstorming)
 - [components](#components)
 - [design-patterns-principles](#design-patterns-principles)
 - [eslint-config](#eslint-config)
 - [solo-ops](#solo-ops)
 - [unocss-shadcn](#unocss-shadcn)
 - [vite-tanstack](#vite-tanstack)
+
+## brainstorming
+Use this before any creative work (features/components/behavior changes) to turn rough ideas into approved brainstorming/design docs through one-question-at-a-time dialogue.
+
+Quick workflow:
+1. Explore project context (files/docs/recent commits).
+2. Ask one clarifying question at a time.
+3. Propose 2-3 approaches with trade-offs and recommendation.
+4. Present design sections and get approval.
+5. Ask where to save before writing:
+6. Default: `docs/brainstorming/`
+7. Or user-provided custom directory.
+8. Write and deliver the brainstorming doc, then stop (no implementation planning step).
+
+Related files:
+- `skills/brainstorming/SKILL.md`
+- `skills/brainstorming/agents/openai.yaml`
 
 ## components
 Use when designing, implementing, or reviewing React/TypeScript components with naming conventions, props typing, hooks usage, and UnoCSS styling standards.

@@ -3,6 +3,7 @@
 
 本仓库当前 `skills/` 目录包含以下技能：
 
+- `brainstorming`
 - `components`
 - `design-patterns-principles`
 - `eslint-config`
@@ -34,6 +35,7 @@ npx skills add JsonLee12138/prompts --all
 
 ```bash
 npx skills add JsonLee12138/prompts \
+  --skill brainstorming \
   --skill components \
   --skill design-patterns-principles \
   --skill eslint-config \
@@ -55,12 +57,30 @@ npx skills add .
 - `-y, --yes`：跳过交互确认
 
 ## Skills 使用目录
+- [brainstorming](#brainstorming)
 - [components](#components)
 - [design-patterns-principles](#design-patterns-principles)
 - [eslint-config](#eslint-config)
 - [solo-ops](#solo-ops)
 - [unocss-shadcn](#unocss-shadcn)
 - [vite-tanstack](#vite-tanstack)
+
+## brainstorming
+适用场景：所有创意型工作（功能、组件、行为变更）前先使用，基于“一次一个问题”的对话把想法收敛为可确认的脑暴/设计文档。
+
+快速流程：
+1. 探索项目上下文（文件/文档/最近提交）。
+2. 一次只问一个澄清问题。
+3. 提出 2-3 个方案，给出权衡和推荐。
+4. 分段展示设计并逐段确认。
+5. 写文档前先询问保存位置：
+6. 默认目录：`docs/brainstorming/`
+7. 或用户指定的自定义目录。
+8. 输出脑暴文档后结束（不进入 implementation planning）。
+
+相关文件：
+- `skills/brainstorming/SKILL.md`
+- `skills/brainstorming/agents/openai.yaml`
 
 ## components
 适用场景：设计、实现或评审 React/TypeScript 组件时，统一命名规范、Props 类型、Hooks 用法和 UnoCSS 风格。
