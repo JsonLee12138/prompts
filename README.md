@@ -3,6 +3,7 @@
 
 This repository includes the following skills (current `skills/` directory only):
 
+- `actions-npm`
 - `brainstorming`
 - `components`
 - `design-patterns-principles`
@@ -35,6 +36,7 @@ npx skills add JsonLee12138/prompts --all
 
 ```bash
 npx skills add JsonLee12138/prompts \
+  --skill actions-npm \
   --skill brainstorming \
   --skill components \
   --skill design-patterns-principles \
@@ -57,6 +59,7 @@ npx skills add .
 - `-y, --yes`: skip confirmation prompts
 
 ## Skills Usage Index
+- [actions-npm](#actions-npm)
 - [brainstorming](#brainstorming)
 - [components](#components)
 - [design-patterns-principles](#design-patterns-principles)
@@ -64,6 +67,21 @@ npx skills add .
 - [solo-ops](#solo-ops)
 - [unocss-shadcn](#unocss-shadcn)
 - [vite-tanstack](#vite-tanstack)
+
+## actions-npm
+Use when creating GitHub Actions workflows for npm package publishing with OIDC provenance, especially tag-triggered release pipelines that avoid `NPM_TOKEN`.
+
+Quick workflow:
+1. Copy `assets/release-npm.yml` into `.github/workflows/`.
+2. Ensure workflow permissions include `id-token: write`.
+3. Explicitly set `NODE_AUTH_TOKEN: ""`.
+4. Upgrade npm to v11+ before publish.
+5. Ensure `package.json.repository` matches `github.com/<owner>/<repo>`.
+6. Publish with provenance enabled and without `NPM_TOKEN`.
+
+Related files:
+- `skills/actions-npm/SKILL.md`
+- `skills/actions-npm/assets/release-npm.yml`
 
 ## brainstorming
 Use this before any creative work (features/components/behavior changes) to turn rough ideas into approved brainstorming/design docs through one-question-at-a-time dialogue.

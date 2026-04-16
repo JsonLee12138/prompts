@@ -3,6 +3,7 @@
 
 本仓库当前 `skills/` 目录包含以下技能：
 
+- `actions-npm`
 - `brainstorming`
 - `components`
 - `design-patterns-principles`
@@ -35,6 +36,7 @@ npx skills add JsonLee12138/prompts --all
 
 ```bash
 npx skills add JsonLee12138/prompts \
+  --skill actions-npm \
   --skill brainstorming \
   --skill components \
   --skill design-patterns-principles \
@@ -57,6 +59,7 @@ npx skills add .
 - `-y, --yes`：跳过交互确认
 
 ## Skills 使用目录
+- [actions-npm](#actions-npm)
 - [brainstorming](#brainstorming)
 - [components](#components)
 - [design-patterns-principles](#design-patterns-principles)
@@ -64,6 +67,21 @@ npx skills add .
 - [solo-ops](#solo-ops)
 - [unocss-shadcn](#unocss-shadcn)
 - [vite-tanstack](#vite-tanstack)
+
+## actions-npm
+适用场景：创建基于 GitHub Actions 的 npm 包发布流程，使用 OIDC provenance 完成无 `NPM_TOKEN` 的发布，尤其适合 tag 触发的 release pipeline。
+
+快速流程：
+1. 将 `assets/release-npm.yml` 复制到 `.github/workflows/`。
+2. 确保 workflow 权限包含 `id-token: write`。
+3. 显式设置 `NODE_AUTH_TOKEN: ""`。
+4. 发布前升级 npm 到 v11+。
+5. 确保 `package.json.repository` 与 `github.com/<owner>/<repo>` 匹配。
+6. 开启 provenance 发布，且不配置 `NPM_TOKEN`。
+
+相关文件：
+- `skills/actions-npm/SKILL.md`
+- `skills/actions-npm/assets/release-npm.yml`
 
 ## brainstorming
 适用场景：所有创意型工作（功能、组件、行为变更）前先使用，基于“一次一个问题”的对话把想法收敛为可确认的脑暴/设计文档。

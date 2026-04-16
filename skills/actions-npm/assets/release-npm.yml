@@ -1,0 +1,47 @@
+name: Release npm
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.2
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2.2.0
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          registry-url: https://registry.npmjs.org/
+
+      - name: Upgrade npm for OIDC support
+        run: |
+          npm install -g npm@latest 2>/dev/null || {
+            TARBALL=$(curl -s https://registry.npmjs.org/npm/latest | \
+              node -e "process.stdout.write(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).dist.tarball)")
+            NPM_GLOBAL=$(npm prefix -g)
+            curl -sL "$TARBALL" -o /tmp/npm.tgz
+            rm -rf "${NPM_GLOBAL}/lib/node_modules/npm"
+            tar -xzf /tmp/npm.tgz -C "${NPM_GLOBAL}/lib/node_modules"
+            mv "${NPM_GLOBAL}/lib/node_modules/package" "${NPM_GLOBAL}/lib/node_modules/npm"
+          }
+          npm --version
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ""
