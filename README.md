@@ -6,7 +6,6 @@ This repository includes the following skills (current `skills/` directory only)
 - `actions-npm`
 - `brainstorming`
 - `claude-design`
-- `claude-design-source`
 - `components`
 - `design-patterns-principles`
 - `eslint-config`
@@ -42,7 +41,6 @@ npx skills add JsonLee12138/prompts \
   --skill actions-npm \
   --skill brainstorming \
   --skill claude-design \
-  --skill claude-design-source \
   --skill components \
   --skill design-patterns-principles \
   --skill eslint-config \
@@ -68,7 +66,6 @@ npx skills add .
 - [actions-npm](#actions-npm)
 - [brainstorming](#brainstorming)
 - [claude-design](#claude-design)
-- [claude-design-source](#claude-design-source)
 - [components](#components)
 - [design-patterns-principles](#design-patterns-principles)
 - [eslint-config](#eslint-config)
@@ -130,19 +127,6 @@ Route mapping:
 Related files:
 - `skills/claude-design/SKILL.md`
 - `skills/claude-design/references/`
-
-## claude-design-source
-Design source references for claude-design routing. Provides the reference prompts and connector configuration used by the claude-design skill.
-
-References:
-- `skills/claude-design-source/references/design-critique.md`
-- `skills/claude-design-source/references/accessibility-review.md`
-- `skills/claude-design-source/references/design-handoff.md`
-- `skills/claude-design-source/references/design-system.md`
-- `skills/claude-design-source/references/ux-copy.md`
-- `skills/claude-design-source/references/user-research.md`
-- `skills/claude-design-source/references/research-synthesis.md`
-- `skills/claude-design-source/references/CONNECTORS.md`
 
 ## components
 Use when designing, implementing, or reviewing React/TypeScript components with naming conventions, props typing, hooks usage, and UnoCSS styling standards.
