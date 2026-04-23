@@ -5,6 +5,8 @@ This repository includes the following skills (current `skills/` directory only)
 
 - `actions-npm`
 - `brainstorming`
+- `claude-design`
+- `claude-design-source`
 - `components`
 - `design-patterns-principles`
 - `eslint-config`
@@ -39,6 +41,8 @@ npx skills add JsonLee12138/prompts --all
 npx skills add JsonLee12138/prompts \
   --skill actions-npm \
   --skill brainstorming \
+  --skill claude-design \
+  --skill claude-design-source \
   --skill components \
   --skill design-patterns-principles \
   --skill eslint-config \
@@ -63,6 +67,8 @@ npx skills add .
 ## Skills Usage Index
 - [actions-npm](#actions-npm)
 - [brainstorming](#brainstorming)
+- [claude-design](#claude-design)
+- [claude-design-source](#claude-design-source)
 - [components](#components)
 - [design-patterns-principles](#design-patterns-principles)
 - [eslint-config](#eslint-config)
@@ -102,6 +108,41 @@ Quick workflow:
 Related files:
 - `skills/brainstorming/SKILL.md`
 - `skills/brainstorming/agents/openai.yaml`
+
+## claude-design
+Unified design workflow router for critique, accessibility review, developer handoff, design system work, UX copy, user research, and research synthesis.
+
+Quick workflow:
+1. Route the request to the most relevant reference based on the request type.
+2. If no design-tool connection (Figma/Pencil) is available, ask user before falling back to HTML design mode.
+3. Follow tool selection rules: explicit tool choice locks the flow; Figma as source + Pencil MCP as execution.
+4. Combine multiple references only when request spans multiple design stages.
+
+Route mapping:
+- Design review/critique → `references/design-critique.md`
+- Accessibility/a11y review → `references/accessibility-review.md`
+- Developer handoff/specs → `references/design-handoff.md`
+- Design system audit → `references/design-system.md`
+- UX copy/writing → `references/ux-copy.md`
+- User research planning → `references/user-research.md`
+- Research synthesis → `references/research-synthesis.md`
+
+Related files:
+- `skills/claude-design/SKILL.md`
+- `skills/claude-design/references/`
+
+## claude-design-source
+Design source references for claude-design routing. Provides the reference prompts and connector configuration used by the claude-design skill.
+
+References:
+- `skills/claude-design-source/references/design-critique.md`
+- `skills/claude-design-source/references/accessibility-review.md`
+- `skills/claude-design-source/references/design-handoff.md`
+- `skills/claude-design-source/references/design-system.md`
+- `skills/claude-design-source/references/ux-copy.md`
+- `skills/claude-design-source/references/user-research.md`
+- `skills/claude-design-source/references/research-synthesis.md`
+- `skills/claude-design-source/references/CONNECTORS.md`
 
 ## components
 Use when designing, implementing, or reviewing React/TypeScript components with naming conventions, props typing, hooks usage, and UnoCSS styling standards.
