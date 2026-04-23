@@ -5,9 +5,11 @@
 
 - `actions-npm`
 - `brainstorming`
+- `claude-design`
 - `components`
 - `design-patterns-principles`
 - `eslint-config`
+- `makefile`
 - `solo-ops`
 - `unocss-shadcn`
 - `vite-tanstack`
@@ -38,9 +40,11 @@ npx skills add JsonLee12138/prompts --all
 npx skills add JsonLee12138/prompts \
   --skill actions-npm \
   --skill brainstorming \
+  --skill claude-design \
   --skill components \
   --skill design-patterns-principles \
   --skill eslint-config \
+  --skill makefile \
   --skill solo-ops \
   --skill unocss-shadcn \
   --skill vite-tanstack
@@ -61,9 +65,11 @@ npx skills add .
 ## Skills 使用目录
 - [actions-npm](#actions-npm)
 - [brainstorming](#brainstorming)
+- [claude-design](#claude-design)
 - [components](#components)
 - [design-patterns-principles](#design-patterns-principles)
 - [eslint-config](#eslint-config)
+- [makefile](#makefile)
 - [solo-ops](#solo-ops)
 - [unocss-shadcn](#unocss-shadcn)
 - [vite-tanstack](#vite-tanstack)
@@ -99,6 +105,40 @@ npx skills add .
 相关文件：
 - `skills/brainstorming/SKILL.md`
 - `skills/brainstorming/agents/openai.yaml`
+
+## claude-design
+统一设计工作流路由，涵盖评审、可访问性审查、开发交接、设计系统审计、UX 文案、用户研究和研究综合。
+
+快速流程：
+1. 根据请求类型路由到最匹配的参考文档。
+2. 如果无设计工具连接（Figma/Pencil），在回退到 HTML 设计模式前先询问用户。
+3. 遵循工具选择规则：明确指定工具则锁定流程；Figma 作为源 + Pencil MCP 作为执行接口。
+4. 仅当请求跨越多个设计阶段时才组合多个参考文档。
+
+路由映射：
+- 设计评审/反馈 → `references/design-critique.md`
+- 可访问性/a11y 审查 → `references/accessibility-review.md`
+- 开发交接/规格说明 → `references/design-handoff.md`
+- 设计系统审计 → `references/design-system.md`
+- UX 文案/写作 → `references/ux-copy.md`
+- 用户研究计划 → `references/user-research.md`
+- 研究综合 → `references/research-synthesis.md`
+
+相关文件：
+- `skills/claude-design/SKILL.md`
+- `skills/claude-design/references/`
+
+## makefile
+适用场景：创建或编辑 Makefile，需要自动生成帮助目标。涵盖自文档化 Makefile 的 `## comment` 约定。
+
+快速流程：
+1. 设置 `.DEFAULT_GOAL := help`。
+2. 在 `.PHONY` 中声明所有非文件目标。
+3. 将 `## 描述` 写在每个目标的同一行。
+4. 包含标准的 `help` 目标，使用 grep/sed/awk 管线。
+
+相关文件：
+- `skills/makefile/SKILL.md`
 
 ## components
 适用场景：设计、实现或评审 React/TypeScript 组件时，统一命名规范、Props 类型、Hooks 用法和 UnoCSS 风格。
