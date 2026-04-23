@@ -1,0 +1,54 @@
+# Go Project Makefile
+# Auto-generated help: `make` or `make help`
+
+.DEFAULT_GOAL := help
+SHELL := /bin/bash
+APP_NAME := $(shell basename $(CURDIR))
+VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
+COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+BUILD_TIME := $(shell date -u '+%Y-%m-%dT%H:%M:%SZ')
+LDFLAGS := -X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.buildTime=$(BUILD_TIME)
+
+.PHONY: help build run test lint fmt vet clean install tidy docker-build docker-run
+
+help: ## 显示帮助信息
+	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sed 's/:.*##/:/' | awk -F: '{gsub(/^ /, "", $$2); printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+build: ## 编译项目
+	go build -ldflags "$(LDFLAGS)" -o bin/$(APP_NAME) .
+
+run: ## 运行项目
+	go run .
+
+test: ## 运行测试
+	go test -v -race -coverprofile=coverage.out ./...
+
+test-cover: ## 运行测试并显示覆盖率
+	go test -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out -o coverage.html
+	@echo "覆盖率报告: coverage.html"
+
+lint: ## 运行 linter
+	golangci-lint run ./...
+
+fmt: ## 格式化代码
+	gofmt -s -w .
+	goimports -w .
+
+vet: ## 运行 go vet
+	go vet ./...
+
+tidy: ## 整理依赖
+	go mod tidy
+
+install: ## 安装到 GOPATH
+	go install .
+
+clean: ## 清理构建产物
+	rm -rf bin/ coverage.out coverage.html
+
+docker-build: ## 构建 Docker 镜像
+	docker build -t $(APP_NAME):$(VERSION) .
+
+docker-run: ## 运行 Docker 容器
+	docker run --rm -p 8080:8080 $(APP_NAME):$(VERSION)

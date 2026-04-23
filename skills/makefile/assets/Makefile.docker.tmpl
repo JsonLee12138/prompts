@@ -1,0 +1,50 @@
+# Docker Compose Project Makefile
+# Auto-generated help: `make` or `make help`
+
+.DEFAULT_GOAL := help
+SHELL := /bin/bash
+COMPOSE := docker compose
+COMPOSE_FILE := docker-compose.yml
+ENV_FILE := .env
+
+.PHONY: help up down build restart logs ps pull clean exec shell
+
+help: ## 显示帮助信息
+	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sed 's/:.*##/:/' | awk -F: '{gsub(/^ /, "", $$2); printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+up: ## 启动所有服务
+	$(COMPOSE) -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up -d
+
+down: ## 停止所有服务
+	$(COMPOSE) -f $(COMPOSE_FILE) down
+
+build: ## 构建所有镜像
+	$(COMPOSE) -f $(COMPOSE_FILE) build --no-cache
+
+rebuild: ## 强制重建并启动
+	$(COMPOSE) -f $(COMPOSE_FILE) up -d --build --force-recreate
+
+restart: ## 重启所有服务
+	$(COMPOSE) -f $(COMPOSE_FILE) restart
+
+logs: ## 查看所有服务日志
+	$(COMPOSE) -f $(COMPOSE_FILE) logs -f
+
+logs-tail: ## 查看最后 100 行日志
+	$(COMPOSE) -f $(COMPOSE_FILE) logs --tail=100
+
+ps: ## 查看服务状态
+	$(COMPOSE) -f $(COMPOSE_FILE) ps
+
+pull: ## 拉取最新镜像
+	$(COMPOSE) -f $(COMPOSE_FILE) pull
+
+exec: ## 在运行中的容器中执行命令 (用法: make exec SVC=web CMD=sh)
+	$(COMPOSE) -f $(COMPOSE_FILE) exec $(SVC) $(CMD)
+
+shell: ## 进入容器 shell (用法: make shell SVC=web)
+	$(COMPOSE) -f $(COMPOSE_FILE) exec $(SVC) sh
+
+clean: ## 清理停止的容器和未使用的镜像
+	$(COMPOSE) -f $(COMPOSE_FILE) down -v --remove-orphans
+	docker system prune -f

@@ -1,0 +1,54 @@
+# Monorepo Project Makefile
+# Auto-generated help: `make` or `make help`
+
+.DEFAULT_GOAL := help
+SHELL := /bin/bash
+PKG_MANAGER := $(shell if [ -f pnpm-lock.yaml ]; then echo "pnpm"; elif [ -f yarn.lock ]; then echo "yarn"; else echo "npm"; fi)
+
+.PHONY: help install build test lint clean deploy dev docker-build docker-run
+
+help: ## 显示帮助信息
+	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sed 's/:.*##/:/' | awk -F: '{gsub(/^ /, "", $$2); printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+install: ## 安装所有依赖
+	$(PKG_MANAGER) install
+
+build: ## 构建所有包
+	$(PKG_MANAGER) run build
+
+build-%: ## 构建指定包 (用法: make build-web)
+	$(PKG_MANAGER) --filter $* run build
+
+test: ## 运行所有测试
+	$(PKG_MANAGER) run test
+
+test-%: ## 运行指定包的测试 (用法: make test-web)
+	$(PKG_MANAGER) --filter $* run test
+
+lint: ## 运行所有 linter
+	$(PKG_MANAGER) run lint
+
+lint-%: ## 运行指定包的 linter (用法: make lint-web)
+	$(PKG_MANAGER) --filter $* run lint
+
+format: ## 格式化所有代码
+	$(PKG_MANAGER) run format
+
+dev: ## 启动开发环境
+	$(PKG_MANAGER) run dev
+
+dev-%: ## 启动指定包的开发环境 (用法: make dev-web)
+	$(PKG_MANAGER) --filter $* run dev
+
+clean: ## 清理所有构建产物
+	$(PKG_MANAGER) run clean
+	rm -rf node_modules/.cache/
+
+deploy: ## 部署所有服务
+	$(PKG_MANAGER) run deploy
+
+docker-build: ## 构建所有 Docker 镜像
+	$(PKG_MANAGER) run docker:build
+
+docker-run: ## 运行所有 Docker 容器
+	$(PKG_MANAGER) run docker:run

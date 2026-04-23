@@ -1,0 +1,45 @@
+# Node.js / TypeScript Project Makefile
+# Auto-generated help: `make` or `make help`
+
+.DEFAULT_GOAL := help
+SHELL := /bin/bash
+APP_NAME := $(shell node -p "require('./package.json').name" 2>/dev/null || basename $(CURDIR))
+PKG_MANAGER := $(shell if [ -f pnpm-lock.yaml ]; then echo "pnpm"; elif [ -f yarn.lock ]; then echo "yarn"; else echo "npm"; fi)
+
+.PHONY: help install dev build test lint format clean type-check docker-build docker-run
+
+help: ## 显示帮助信息
+	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | sed 's/:.*##/:/' | awk -F: '{gsub(/^ /, "", $$2); printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+install: ## 安装依赖
+	$(PKG_MANAGER) install
+
+dev: ## 启动开发服务器
+	$(PKG_MANAGER) run dev
+
+build: ## 构建项目
+	$(PKG_MANAGER) run build
+
+test: ## 运行测试
+	$(PKG_MANAGER) test
+
+test-watch: ## 监听模式运行测试
+	$(PKG_MANAGER) run test --watch
+
+lint: ## 运行 linter
+	$(PKG_MANAGER) run lint
+
+format: ## 格式化代码
+	$(PKG_MANAGER) run format
+
+type-check: ## 运行类型检查
+	$(PKG_MANAGER) run type-check
+
+clean: ## 清理构建产物
+	rm -rf dist/ node_modules/.cache/ coverage/
+
+docker-build: ## 构建 Docker 镜像
+	docker build -t $(APP_NAME):latest .
+
+docker-run: ## 运行 Docker 容器
+	docker run --rm -p 3000:3000 $(APP_NAME):latest

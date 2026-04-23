@@ -8,6 +8,7 @@ This repository includes the following skills (current `skills/` directory only)
 - `components`
 - `design-patterns-principles`
 - `eslint-config`
+- `makefile`
 - `solo-ops`
 - `unocss-shadcn`
 - `vite-tanstack`
@@ -41,6 +42,7 @@ npx skills add JsonLee12138/prompts \
   --skill components \
   --skill design-patterns-principles \
   --skill eslint-config \
+  --skill makefile \
   --skill solo-ops \
   --skill unocss-shadcn \
   --skill vite-tanstack
@@ -64,6 +66,7 @@ npx skills add .
 - [components](#components)
 - [design-patterns-principles](#design-patterns-principles)
 - [eslint-config](#eslint-config)
+- [makefile](#makefile)
 - [solo-ops](#solo-ops)
 - [unocss-shadcn](#unocss-shadcn)
 - [vite-tanstack](#vite-tanstack)
@@ -144,6 +147,18 @@ References:
 - `skills/eslint-config/references/workspace.md`
 - `skills/eslint-config/references/vscode-settings.md`
 - `skills/eslint-config/references/commit-quality.md`
+
+## makefile
+Use when creating or editing Makefiles that need an auto-generated help target. Covers inline `## comment` convention for self-documenting Makefiles.
+
+Quick workflow:
+1. Set `.DEFAULT_GOAL := help`.
+2. Declare all non-file targets in `.PHONY`.
+3. Write `## 描述` on the same line as each target.
+4. Include the standard `help` target with grep/sed/awk pipeline.
+
+Related files:
+- `skills/makefile/SKILL.md`
 
 ## solo-ops
 `solo-ops` manages multi-agent role workflows with git worktrees + terminal sessions.
